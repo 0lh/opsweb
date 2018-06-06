@@ -1,0 +1,4 @@
+1、as_view()方法
+url(r'^user/list/$', views.UserListView.as_view(), name="user_list")
+
+2、用户添加用户组、删除用户组、
