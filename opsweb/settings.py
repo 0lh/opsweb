@@ -85,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'django',  # 数据库名
         'USER': 'root',  # 用户名
-        'PASSWORD': '',
+        'PASSWORD': '20182018',
         'HOST': '202.85.219.78',
         'PORT': '3306',
         'CHARSET': 'utf8',  ##设置字符集，不然会出现中文乱码
