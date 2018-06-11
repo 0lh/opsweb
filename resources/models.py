@@ -12,4 +12,4 @@ class Idc(models.Model):
     username = models.CharField("机房联系人", max_length=32, null=True)
 
     class Meta:
-        db_table='resources_idc'
+        db_table = 'resources_idc'
