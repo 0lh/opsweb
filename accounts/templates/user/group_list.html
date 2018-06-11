@@ -17,7 +17,8 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ group_obj.name }}</td>
                 <td>
-                    <a type="button" class="btn btn-primary btn-sm" href="">成员列表</a>
+                    <a type="button" class="btn btn-primary btn-sm"
+                       href="{% url 'group_member_list' %}?gid={{ group_obj.id }}">成员列表</a>
                     <button type="button" class="btn btn-success btn-sm">查看权限</button>
                     <a class="btn btn-info btn-sm" href="">修改权限</a>
                     <button type="button" class="btn btn-danger btn-sm del_group" group_id="{{ group.id }}">删除</button>

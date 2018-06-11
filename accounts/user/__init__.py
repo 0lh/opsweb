@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 
 # 验证所有视图的登录验证
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, QueryDict
 
 
 # 使用django 内置ListView
@@ -73,6 +73,60 @@ class ModifyUserStatusView(View):
 
 class ModifyUserGroupView(View):
     def get(self, request):
-        groups = Group.objects.all()
-        # 转换成字典
-        return JsonResponse(list(groups.values("id", "name")), safe=False)
+        uid = request.GET.get("uid", "")
+        group_objs = Group.objects.all()
+        try:
+            user_obj = User.objects.get(id=uid)
+        except User.DoesNotExist:
+            pass
+        else:
+            # group_objs-
+            # 排除用户原来的组,select * from group where id not in (1,2,3,..)
+            group_objs = group_objs.exclude(id__in=user_obj.groups.values_list("id"))
+
+        # 转换成字典,QuerySet不能被序列化，
+        return JsonResponse(list(group_objs.values("id", "name")), safe=False)
+
+    def put(self, request):
+        ret = {"status": 0}
+        print(request.POST)
+        print(request.body)
+        data = QueryDict(request.body)
+        print(data)
+        uid = data.get("uid", "")
+        gid = data.get("gid", "")
+        try:
+            user_obj = User.objects.get(id=uid)
+        except User.DoesNotExist:
+            ret['status'] = 1
+            ret['errmsg'] = '该用户不存在'
+            return JsonResponse(ret)
+        try:
+            group_obj = Group.objects.get(id=gid)
+        except Group.DoesNotExist:
+            ret['status'] = 1
+            ret['errmsg'] = '该用户组不存在'
+            return JsonResponse(ret)
+        user_obj.groups.add(group_obj)
+        return JsonResponse(ret)
+
+    def delete(self, request):
+        ret = {"status": 0}
+        print(request.body)
+        data = QueryDict(request.body)
+        try:
+            user_obj = User.objects.get(id=data.get("uid", ""))
+            group_obj = Group.objects.get(id=data.get("gid", ""))
+
+            # 第一种删除方式
+            user_obj.groups.remove(group_obj)
+
+            # 第二种
+            # group_obj.user_set.remove(user_obj)
+        except User.DoesNotExist:
+            ret['status'] = 1
+            ret['errmsg'] = "用户不存在"
+        except Group.DoesNotExist:
+            ret['status'] = 1
+            ret['errmsg'] = "用户组不存在"
+        return JsonResponse(ret)

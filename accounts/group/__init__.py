@@ -1,7 +1,7 @@
 # 用户组列表
-from django.views.generic import ListView, View
+from django.views.generic import ListView, View, TemplateView
 from django.contrib.auth.models import Group
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.db import IntegrityError
 
 
@@ -38,3 +38,19 @@ class GroupCreateView(View):
             print(e.args)
 
         return JsonResponse(ret)
+
+
+class GroupUserList(TemplateView):
+    template_name = "user/group_member_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupUserList, self).get_context_data(**kwargs)
+        # 将指定用户组内的成员列表传给模板
+        gid = self.request.GET.get("gid", "")
+        try:
+            group_obj = Group.objects.get(id=gid)
+            context['obj_list'] = group_obj.user_set.all()
+        except Group.DoesNotExist:
+            raise Http404("group does not exist")
+        context['gid'] = gid
+        return context

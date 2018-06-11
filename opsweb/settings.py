@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dashboard',
     'accounts',
+    'resources',
 ]
 
 MIDDLEWARE = [
@@ -84,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'django',  # 数据库名
         'USER': 'root',  # 用户名
-        'PASSWORD': '&%$*$#@alkdfj*&%$',
+        'PASSWORD': '&%$*$#@al',
         'HOST': '202.85.212.233',
         'PORT': '3306',
         'CHARSET': 'utf8',  ##设置字符集，不然会出现中文乱码
