@@ -1,10 +1,12 @@
 from django.views.generic import ListView, View
 from django.contrib.auth.models import User, Group
-# from accounts.views import LoginRequiredMixin
-
 # 验证所有视图的登录验证
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, JsonResponse, QueryDict
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
+from django.shortcuts import reverse
+from django.conf import settings
 
 
 # 使用django 内置ListView
@@ -14,6 +16,7 @@ class UserListView(LoginRequiredMixin, ListView):
     paginate_by = 8
     before_range_num = 4
     after_range_num = 5
+    ordering = 'id'
     ''' 
     源码写死
     context = {
@@ -28,6 +31,9 @@ class UserListView(LoginRequiredMixin, ListView):
         queryset = super(UserListView, self).get_queryset()
         # 排除管理员账号显示
         queryset = queryset.exclude(is_superuser=True)
+        username = self.request.GET.get("search_username", None)
+        if username:
+            queryset = queryset.filter(username__icontains=username)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -35,7 +41,14 @@ class UserListView(LoginRequiredMixin, ListView):
 
         # d当前页的前3条
         context["page_range"] = self.get_page_range(context['page_obj'])
-
+        # 处理搜索条件
+        search_data = self.request.GET.copy()
+        try:
+            search_data.pop("page")
+        except:
+            pass
+        context.update(search_data.dict())
+        context['search_data'] = "&" + search_data.urlencode()
         return context
 
     def get_page_range(self, page_obj):
@@ -45,9 +58,16 @@ class UserListView(LoginRequiredMixin, ListView):
         if start <= 0:
             start = 1
 
-        if end > page_obj.paginator.num_pages:
+        if end >= page_obj.paginator.num_pages:
             end = page_obj.paginator.num_pages
-        return range(start, end)
+        return range(start, end + 1)
+
+    # @method_decorator(permission_required("auth.add_user", login_url=reverse('error', kwargs={'next': 'dashboard',
+
+    # 不拥有add_user权限，则会返回到主页面
+    @method_decorator(permission_required("auth.add_user", login_url='/'))
+    def get(self, request, *args, **kwargs):
+        return super(UserListView, self).get(request, *args, **kwargs)
 
 
 class ModifyUserStatusView(View):

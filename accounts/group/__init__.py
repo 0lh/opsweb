@@ -3,9 +3,13 @@ from django.views.generic import ListView, View, TemplateView
 from django.contrib.auth.models import Group
 from django.http import JsonResponse, Http404
 from django.db import IntegrityError
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class GroupListView(ListView):
+
+class GroupListView(LoginRequiredMixin, ListView):
     model = Group
     template_name = "user/group_list.html"
 
@@ -40,7 +44,7 @@ class GroupCreateView(View):
         return JsonResponse(ret)
 
 
-class GroupUserList(TemplateView):
+class GroupUserList(LoginRequiredMixin, TemplateView):
     template_name = "user/group_member_list.html"
 
     def get_context_data(self, **kwargs):

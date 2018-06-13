@@ -9,6 +9,7 @@
                     <li>
                         <a href="{% url 'user_list' %}" class="menu-link">用户列表</a>
                         <a href="{% url 'group_list' %}" class="menu-link">用户组管理</a>
+                        <a href="{% url 'permission_list' %}" class="menu-link">权限管理</a>
                     </li>
                 </ul>
             </li> <!--用户管理 end-->
@@ -22,7 +23,7 @@
                         <a href="#" class="menu-link">业务线管理</a>
                     </li>
                     <li>
-                        <a href="#" class="menu-link">添加idc</a>
+                        <a href="{% url 'idc_list' %}" class="menu-link">管理idc</a>
                     </li>
                 </ul>
             </li> <!--CMDB资产平台结束-->

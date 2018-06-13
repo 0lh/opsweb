@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 
 from accounts import group
-from . import views, user
+from . import views, user, permission
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
@@ -24,4 +24,8 @@ urlpatterns = [
         url(r'^create/$', group.GroupCreateView.as_view(), name="group_create"),
         url(r'^member_list/$', group.GroupUserList.as_view(), name="group_member_list"),
     ])),
+
+    url(r'^permission/', include([
+        url(r'^list/$', permission.PermissionListView.as_view(), name='permission_list')
+    ]))
 ]

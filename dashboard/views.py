@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse, redirect
 from django.http import HttpResponse, JsonResponse
 from django.template import Context, loader
 from django.contrib.auth.decorators import login_required
@@ -28,3 +28,35 @@ class IndexView(LoginRequiredMixin, TemplateView):
 def user_detail(requesti, *args, **kwargs):
     print(args)  # 类型为Tuple
     return HttpResponse("")
+
+
+class SuccessView(TemplateView):
+    template_name = "public/success.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(SuccessView, self).get_context_data(**kwargs)
+        success_name = self.kwargs.get("next", "")
+        next_url = '/'
+        try:
+            next_url = reverse(success_name)
+        except:
+            pass
+        context['next_url'] = next_url
+        return context
+
+
+class ErrorView(TemplateView):
+    template_name = 'public/error.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ErrorView, self).get_context_data(**kwargs)
+        error_name = self.kwargs.get("next", "")
+        errmsg = self.kwargs.get('msg', "")
+        next_url = '/'
+        try:
+            next_url = reverse(error_name)
+        except:
+            pass
+        context['next_url'] = next_url
+        context['errmsg'] = errmsg
+        return context

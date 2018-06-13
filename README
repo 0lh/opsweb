@@ -2,3 +2,7 @@
 url(r'^user/list/$', views.UserListView.as_view(), name="user_list")
 
 2、用户添加用户组、删除用户组、
+
+3、所有视图加上登录验证，除了登录和退出
+
+4、权限列表增加搜索功能

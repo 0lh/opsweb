@@ -9,8 +9,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>运维平台 {{ title }}</title>
-    <link href="/static/img/favicon.ico" type="image/x-icon" rel="shortcut icon">
+    <title>运维平台{{ title }}</title>
+    {#    <link href="/static/img/favicon.ico" type="image/x-icon" rel="shortcut icon">#}
 
     <!--第三方插件样式-->
     <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -104,15 +104,22 @@
         <a class="navbar-brand" href="/">CMDB</a>
         <ul class="nav navbar-nav">
             <li class="dropdown" id="profile-messages">
-                <a title="" href="#" data-toggle="dropdown" data-target="#profile-messages" class="dropdown-toggle"><i
-                        class="fa fa-user fa-fw"></i><span class="text">Admin</span><b class="caret"></b></a>
+                <a title="" href="#" data-toggle="dropdown" data-target="#profile-messages" class="dropdown-toggle">
+                    <i class="fa fa-user fa-fw"></i>
+                    <span class="text">
+                        {% if user.is_authenticated %}
+                            {{ user.username }}
+                        {% else %}
+                             游客
+                        {% endif %}
+                    </span><b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li><a href="#"><i class="fa fa-user fa-fw"></i>个人中心</a></li>
                     <li class="divider"></li>
-                    <li><a href="#"><i class="fa fa-mail-forward fa-fw"></i>退出登录</a></li>
+                    <li><a href="{% url 'user_logout' %}"><i class="fa fa-mail-forward fa-fw"></i>退出登录</a></li>
                 </ul>
             </li>
-            <li><a href="{% url 'user_logout' %}"><i class="fa fa-mail-forward fa-fw"></i><span>退出登录</span></a></li>
+                        <li><a href="{% url 'user_logout' %}"><i class="fa fa-mail-forward fa-fw"></i><span>退出登录</span></a></li>
         </ul>
         <ul class="nav navbar-nav pull-right">
             <li><a href="http://www.51reboot.com" target="_blank"></a></li>
